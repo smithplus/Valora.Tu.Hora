@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ValoraTuHora | Calculadora de Costo por Hora</title>
+    
     <link
       href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css"
       rel="stylesheet"
@@ -47,6 +48,9 @@
       <h1 class="text-2xl font-bold mb-6 text-center">
         Calculadora de Costo por Hora
       </h1>
+      <p class="text-gray-500 text-sm text-center">
+        Una herramienta para calcular el costo por hora basado en ingresos mensuales y costo de vida.
+      </p>
 
       <!-- Paso 1: Selección de Perfil -->
       <div id="step-1" class="mb-6">
@@ -78,7 +82,7 @@
               <p class="text-sm">
                 Profesionales cuyo ingreso fluctúa significativamente mes a mes,
                 dependiendo de la cantidad y tipo de proyectos que logren
-                obtener
+                obtener.
               </p>
             </div>
             <div class="chip">Próximamente</div>
@@ -115,7 +119,7 @@
             id="monthly_income"
             type="number"
             class="flex-1 block w-full px-3 py-2 rounded-none rounded-r-md border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-            placeholder="Ingrese su ingreso mensual en USD"
+            placeholder="Indique su ingreso mensual en dólares (USD)"
             required
             oninput="calculate()"
           />
