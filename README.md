@@ -4,7 +4,7 @@
 
 **HoraValor** es una herramienta simple y eficiente diseñada para ayudarte a calcular el valor de tu tiempo. Con esta calculadora, puedes determinar el costo por hora basado en tus ingresos mensuales y el costo de vida, tanto si tienes un ingreso fijo como si trabajas de manera independiente.
 
-## Características
+## Características:
 
 - **Cálculo en vivo**: Obtén resultados instantáneamente a medida que ingresas tu información.
 - **Opciones de perfil**: Adapta la calculadora a tu situación, ya sea que tengas un ingreso fijo, variable o mixto.
