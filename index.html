@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ValoraTuHora | Calculadora de Costo por Hora</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@latest/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/flag-icons/css/flag-icons.min.css"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="styles.css" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Valora Tu Hora",
+        "description": "Una herramienta para calcular el costo por hora basado en ingresos mensuales y costo de vida.",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "All",
+        "offers": {
+          "@type": "Offer",
+          "price": "0.00",
+          "priceCurrency": "USD"
+        },
+        "url": "https://dev.themartinsmith.com/Valora%20tu%20Hora/",
+        "author": {
+          "@type": "Person",
+          "name": "@smithplus"
+        },
+        "datePublished": "2024-08-11",
+        "dateModified": "2024-08-11",
+        "image": "https://www.tu-sitio-web.com/images/calculadora.jpg",
+        "potentialAction": {
+          "@type": "UseAction",
+          "target": "https://dev.themartinsmith.com/Valora%20tu%20Hora/"
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-gray-100 p-6">
+    <div class="max-w-6xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+      <h1 class="text-2xl font-bold mb-6 text-center">
+        Calculadora de Costo por Hora
+      </h1>
+
+      <!-- Paso 1: Selección de Perfil -->
+      <div id="step-1" class="mb-6">
+        <label class="block mb-2 font-semibold">1. ¿Cuál es tu perfil?</label>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div
+            id="profile_fixed_income"
+            class="card border p-4 rounded-md text-left"
+            data-profile="fixed_income"
+            onclick="selectProfile('profile_fixed_income')"
+          >
+            <div class="card-icon">💼</div>
+            <div>
+              <p class="font-semibold">Ingreso Fijo al Mes</p>
+              <p class="text-sm">
+                Profesionales que tienen un ingreso mensual estable, ya sea a
+                través de un salario o un contrato con tarifas definidas.
+              </p>
+            </div>
+          </div>
+          <div
+            id="profile_variable_income"
+            class="card border p-4 rounded-md text-left card-disabled"
+            data-profile="variable_income"
+          >
+            <div class="card-icon">📊</div>
+            <div>
+              <p class="font-semibold">Ingreso Variable (No Fijo)</p>
+              <p class="text-sm">
+                Profesionales cuyo ingreso fluctúa significativamente mes a mes,
+                dependiendo de la cantidad y tipo de proyectos que logren
+                obtener
+              </p>
+            </div>
+            <div class="chip">Próximamente</div>
+          </div>
+          <div
+            id="profile_fixed_with_extras"
+            class="card border p-4 rounded-md text-left card-disabled"
+            data-profile="fixed_with_extras"
+          >
+            <div class="card-icon">💸</div>
+            <div>
+              <p class="font-semibold">Ingreso Fijo con Extras</p>
+              <p class="text-sm">
+                Profesionales que tienen un ingreso fijo mensual asegurado, pero
+                también realizan trabajos adicionales que les generan ingresos
+                extra.
+              </p>
+            </div>
+            <div class="chip">Próximamente</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paso 2: Ingreso Mensual Neto -->
+      <div id="step-2" class="mb-6">
+        <label class="block mb-2 font-semibold">2. Ingreso Mensual Neto</label>
+        <div class="flex rounded-md shadow-sm">
+          <span
+            class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"
+          >
+            $
+          </span>
+          <input
+            id="monthly_income"
+            type="number"
+            class="flex-1 block w-full px-3 py-2 rounded-none rounded-r-md border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            placeholder="Ingrese su ingreso mensual en USD"
+            required
+            oninput="calculate()"
+          />
+        </div>
+      </div>
+
+      <!-- Paso 3: Horas de Trabajo al Mes -->
+      <div id="step-3" class="mb-6">
+        <label class="block mb-2 font-semibold">
+          3. Horas de Trabajo al Mes
+        </label>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div
+            id="full_time"
+            class="card border p-4 rounded-md text-left"
+            data-hours="173.2"
+            onclick="selectCard('full_time', 'hours')"
+          >
+            <div class="card-icon">🕒</div>
+            <div>
+              <p class="font-semibold">Full Time</p>
+              <p class="text-sm">(40 horas/semana, 173.2 horas al mes)</p>
+            </div>
+          </div>
+          <div
+            id="part_time"
+            class="card border p-4 rounded-md text-left"
+            data-hours="86.6"
+            onclick="selectCard('part_time', 'hours')"
+          >
+            <div class="card-icon">⏰</div>
+            <div>
+              <p class="font-semibold">Part Time</p>
+              <p class="text-sm">(20 horas/semana, 86.6 horas al mes)</p>
+            </div>
+          </div>
+          <div
+            id="custom_card"
+            class="card border p-4 rounded-md text-left"
+            data-hours="custom"
+            onclick="selectCard('custom_card', 'hours')"
+          >
+            <div class="card-icon">⚙️</div>
+            <div>
+              <p class="font-semibold">Personalizado</p>
+              <p class="text-sm">Introduce el número de horas</p>
+            </div>
+          </div>
+        </div>
+        <input
+          id="custom_hours"
+          type="number"
+          class="mt-4 hidden block w-full p-2 border rounded-md fade"
+          placeholder="Ingrese el número de horas"
+          oninput="calculate()"
+        />
+      </div>
+
+      <!-- Paso 4: Costo de Vida Mensual -->
+      <div id="step-4" class="mb-6">
+        <label class="block mb-2 font-semibold">
+          4. Costo de Vida Mensual (Opcional)
+        </label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div
+            id="cost_known"
+            class="card border p-4 rounded-md text-center"
+            data-option="known"
+            onclick="selectCostOfLiving('cost_known')"
+          >
+            <div class="card-icon">🏠</div>
+            <p class="font-semibold">Sí, lo conozco</p>
+          </div>
+          <div
+            id="cost_average"
+            class="card border p-4 rounded-md text-left"
+            data-option="use_average"
+            onclick="selectCostOfLiving('cost_average')"
+          >
+            <div class="card-icon">🌍</div>
+            <p class="font-semibold">No, usar un costo de vida promedio</p>
+          </div>
+        </div>
+
+        <!-- Input para costo de vida mensual conocido -->
+        <div id="cost_of_living_input" class="mt-4 hidden">
+          <label class="block mb-2 font-semibold">Costo de Vida Mensual</label>
+          <div class="flex rounded-md shadow-sm">
+            <span
+              class="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm"
+            >
+              $
+            </span>
+            <input
+              id="cost_of_living"
+              type="number"
+              class="flex-1 block w-full px-3 py-2 rounded-none rounded-r-md border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              placeholder="Ingrese su costo de vida mensual"
+              oninput="calculate()"
+            />
+          </div>
+        </div>
+
+        <!-- Dropdown para seleccionar ciudad si no conoce el costo de vida -->
+        <div id="city_country_input" class="mt-4 hidden">
+          <label class="block mb-2 font-semibold">Selecciona tu Ciudad</label>
+          <div class="relative">
+            <button
+              id="dropdownButton"
+              onclick="toggleDropdown()"
+              class="w-full p-2 border rounded-md bg-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm flex justify-between items-center"
+            >
+              <span id="selectedCity">Seleccionar Ciudad</span>
+              <svg
+                class="w-5 h-5"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+            <div
+              id="dropdownMenu"
+              class="hidden absolute mt-1 w-full rounded-md bg-white shadow-lg z-10"
+            >
+              <ul
+                class="max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm"
+              >
+                <li>
+                  <button
+                    onclick="selectCity('Argentina, Buenos Aires - $791', '791')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-ar w-6 h-6 mr-2"></span>
+                    Argentina, Buenos Aires - $791
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Bolivia, La Paz - $700', '700')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-bo w-6 h-6 mr-2"></span>
+                    Bolivia, La Paz - $700
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Brazil, Río de Janeiro - $850', '850')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-br w-6 h-6 mr-2"></span>
+                    Brazil, Río de Janeiro - $850
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Brazil, São Paulo - $850', '850')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-br w-6 h-6 mr-2"></span>
+                    Brazil, São Paulo - $850
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Chile, Santiago - $900', '900')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-cl w-6 h-6 mr-2"></span>
+                    Chile, Santiago - $900
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Colombia, Bogotá - $850', '850')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-co w-6 h-6 mr-2"></span>
+                    Colombia, Bogotá - $850
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Costa Rica, San José - $750', '750')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-cr w-6 h-6 mr-2"></span>
+                    Costa Rica, San José - $750
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Dominican Republic, Santo Domingo - $780', '780')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-do w-6 h-6 mr-2"></span>
+                    Dominican Republic, Santo Domingo - $780
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Ecuador, Quito - $680', '680')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-ec w-6 h-6 mr-2"></span>
+                    Ecuador, Quito - $680
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('El Salvador, San Salvador - $750', '750')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-sv w-6 h-6 mr-2"></span>
+                    El Salvador, San Salvador - $750
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Guatemala, Ciudad de Guatemala - $630', '630')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-gt w-6 h-6 mr-2"></span>
+                    Guatemala, Ciudad de Guatemala - $630
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Honduras, Tegucigalpa - $720', '720')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-hn w-6 h-6 mr-2"></span>
+                    Honduras, Tegucigalpa - $720
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Cuba, La Habana - $680', '680')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-cu w-6 h-6 mr-2"></span>
+                    Cuba, La Habana - $680
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Nicaragua, Managua - $690', '690')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-ni w-6 h-6 mr-2"></span>
+                    Nicaragua, Managua - $690
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Mexico, Ciudad de México - $820', '820')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-mx w-6 h-6 mr-2"></span>
+                    Mexico, Ciudad de México - $820
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Panama, Ciudad de Panamá - $670', '670')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-pa w-6 h-6 mr-2"></span>
+                    Panama, Ciudad de Panamá - $670
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Paraguay, Asunción - $760', '760')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-py w-6 h-6 mr-2"></span>
+                    Paraguay, Asunción - $760
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Peru, Lima - $700', '700')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-pe w-6 h-6 mr-2"></span>
+                    Peru, Lima - $700
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Uruguay, Montevideo - $810', '810')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-uy w-6 h-6 mr-2"></span>
+                    Uruguay, Montevideo - $810
+                  </button>
+                </li>
+                <li>
+                  <button
+                    onclick="selectCity('Venezuela, Caracas - $500', '500')"
+                    class="text-gray-700 block w-full text-left px-4 py-2 hover:bg-gray-100 flex items-center"
+                  >
+                    <span class="fi fi-ve w-6 h-6 mr-2"></span>
+                    Venezuela, Caracas - $500
+                  </button>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <small class="option-support-text"
+            >El costo de vida no incluye alquiler.</small
+          >
+        </div>
+
+        <!-- Disclaimer -->
+        <div
+          id="disclaimer"
+          class="mt-4 hidden bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4"
+          role="alert"
+        >
+          <p class="font-bold">Aviso</p>
+          <p>
+            Estos datos son referenciales y provienen de
+            <a href="https://www.numbeo.com/cost-of-living/" class="underline"
+              >Numbeo</a
+            >.
+          </p>
+        </div>
+      </div>
+
+      <!-- Resultados -->
+      <div id="results" class="mt-8 hidden">
+        <h2 class="text-xl font-bold mb-4 text-center">Resultados</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="stat bg-gray-100 p-4 rounded-lg">
+            <div class="stat-figure text-primary">💰</div>
+            <div
+              id="current_hourly_rate"
+              class="stat-value text-primary text-xl font-bold"
+            >
+              $0.00
+            </div>
+            <div class="stat-title">Costo por hora actual</div>
+            <p class="text-sm">(40 horas/semana, 173.2 horas al mes)</p>
+          </div>
+          <div class="stat bg-gray-100 p-4 rounded-lg">
+            <div class="stat-figure text-secondary">🏷️</div>
+            <div
+              id="minimum_hourly_rate"
+              class="stat-value text-secondary text-xl font-bold"
+            >
+              $0.00
+            </div>
+            <div class="stat-title">Costo por hora mínimo</div>
+            <p class="text-sm">(40 horas/semana, 173.2 horas al mes)</p>
+          </div>
+        </div>
+        <p id="advice" class="text-red-500 mt-4 text-center"></p>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
